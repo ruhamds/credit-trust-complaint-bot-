@@ -8,12 +8,10 @@ This project develops a Retrieval-Augmented Generation (RAG) system to enable se
 ## Project Structure
 
 credit-trust-complaint-bot/
-│
 ├── data/
 │ ├── raw/ # Raw CFPB complaint data
 │ └── processed/
 │ └── filtered_complaints.csv # Filtered & cleaned complaint data
-│
 ├── notebooks/
 │ ├── Task1/
 │ │ └── EDA.ipynb # Exploratory Data Analysis notebook
@@ -21,23 +19,20 @@ credit-trust-complaint-bot/
 │ │ └── visual_vector_store.ipynb # Vector store visualization notebook
 │ └── Task3/
 │ └── rag_evaluation.ipynb # RAG evaluation notebooks and related files
-│
 ├── src/
 │ ├── app.py # Gradio web app for interactive chat interface (Task 4)
 │ ├── rag_pipeline.py # RAG pipeline class for retrieval and answer generation (Task 3)
 │ ├── build_vector_store.py # Script for building FAISS vector store (Task 2)
 │ ├── visualize_chunks.py # Visualization utilities for chunk data (Task 2)
 │ └── ... # Other source code files
-│
 ├── src/RAG/
 │ └── vector_store/
 │ ├── faiss_index.index # FAISS vector index file
 │ ├── metadata.pkl # Metadata linking chunks to complaints
 │ └── config.pkl # Configuration for embedding model etc.
-│
 ├── rag_evaluation_results.csv # Results of RAG pipeline evaluation (Task 3)
 ├── requirements.txt # Project dependencies
-└── README.md # This file
+└── README.md 
 
 
 ---
