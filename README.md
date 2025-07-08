@@ -7,23 +7,20 @@ This repository analyzes over 9.6 million US consumer complaints and prepares a 
 ## Project Structure
 
 credit-trust-complaint-bot/
-├── data/ # Raw & processed data
-│ ├── complaints.csv
-│ └── processed/filtered_complaints.csv
-├── notebooks/ # EDA notebook
-│ └── EDA.ipynb
-├── src/ # Source code for tasks
-│ ├── task1_preprocessing/
-│ │ └── preprocess_data.py
-│ ├── task2_vectorstore/
-│ │ ├── build_vector_store.py
-│ │ ├── test_vector_store.py
-│ │ └── faiss_index/ # FAISS index and metadata
-├── .github/workflows/ # CI/CD
+├── .github/workflows/
 │ ├── ci.yml
 │ └── unittests.yml
-├── requirements.txt
-└── README.md
+├── data/ # Raw data (ignored by Git)
+├── notebooks/
+│ ├── EDA.ipynb # Task 1: Data Exploration
+│ └── visual_vector_store.ipynb # Task 2: Index Visualization
+└── src/
+├── RAG/
+│ └── vector_store/
+│ ├── init.py
+│ ├── build_vector_store.py # Task 2: Vector Store Builder
+│ └── visualize_chunks.py # Task 2: Analysis
+├── README.MD
 
 ---
 
