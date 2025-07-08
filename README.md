@@ -1,101 +1,87 @@
-# Credit Trust Complaint Bot
+# CrediTrust Complaint-Answering Chatbot
 
-This repository analyzes over 9.6 million US consumer complaints and prepares a cleaned, structured, and vectorized dataset ready for downstream tasks like semantic search or Retrieval-Augmented Generation (RAG). It uses Python, FAISS, and SentenceTransformers.
+## Project Overview
+This project develops a Retrieval-Augmented Generation (RAG) system to enable semantic search and question-answering on consumer complaints related to financial products such as Credit Cards, Personal Loans, Buy Now Pay Later (BNPL), Savings Accounts, and Money Transfers.
 
 ---
 
 ## Project Structure
 
 credit-trust-complaint-bot/
-├── .github/workflows/
-│ ├── ci.yml
-│ └── unittests.yml
-├── data/ # Raw data (ignored by Git)
+│
+├── data/
+│ ├── raw/ # Raw CFPB complaint data
+│ └── processed/
+│ └── filtered_complaints.csv # Filtered & cleaned complaint data
+│
 ├── notebooks/
-│ ├── EDA.ipynb # Task 1: Data Exploration
-│ └── visual_vector_store.ipynb # Task 2: Index Visualization
-└── src/
-├── RAG/
+│ ├── Task1/
+│ │ └── EDA.ipynb # Exploratory Data Analysis notebook
+│ ├── Task2/
+│ │ └── visual_vector_store.ipynb # Vector store visualization notebook
+│ └── Task3/
+│ └── rag_evaluation.ipynb # RAG evaluation notebooks and related files
+│
+├── src/
+│ ├── app.py # Gradio web app for interactive chat interface (Task 4)
+│ ├── rag_pipeline.py # RAG pipeline class for retrieval and answer generation (Task 3)
+│ ├── build_vector_store.py # Script for building FAISS vector store (Task 2)
+│ ├── visualize_chunks.py # Visualization utilities for chunk data (Task 2)
+│ └── ... # Other source code files
+│
+├── src/RAG/
 │ └── vector_store/
-│ ├── init.py
-│ ├── build_vector_store.py # Task 2: Vector Store Builder
-│ └── visualize_chunks.py # Task 2: Analysis
-├── README.MD
+│ ├── faiss_index.index # FAISS vector index file
+│ ├── metadata.pkl # Metadata linking chunks to complaints
+│ └── config.pkl # Configuration for embedding model etc.
+│
+├── rag_evaluation_results.csv # Results of RAG pipeline evaluation (Task 3)
+├── requirements.txt # Project dependencies
+└── README.md # This file
+
 
 ---
 
-## Task 1: Data Cleaning & EDA
+## Summary of Tasks
 
-### Dataset Overview
+### Task 1: Exploratory Data Analysis (EDA)
+- Loaded and filtered 9.6 million consumer complaints down to 459,138 relevant complaints.
+- Analyzed product distribution, narrative quality, and missing data patterns.
+- Identified BNPL-related complaints via narrative keyword search due to absence of direct labels.
 
-- **Original rows:** 9,609,797
-- **Columns:** 18
-- **Missing Narratives:** ~69%
-- **Final narrative-only subset:** 459,138 rows
+### Task 2: Vector Store Creation and Testing
+- Built a FAISS vector store with 820,653 text chunks from the filtered complaints.
+- Generated metadata linking chunks to complaint IDs and products.
+- Tested retrieval accuracy using example queries, noting limited BNPL-specific results.
 
-### Target Products Extracted
+### Task 3: Retrieval-Augmented Generation (RAG) Pipeline
+- Developed a RAG system combining dense retrieval (FAISS) with rule-based or LLM-based answer generation.
+- Integrated the `SimpleRAGPipeline` class with methods for retrieval, answer generation, and end-to-end querying.
+- Evaluated RAG pipeline with multiple domain-relevant questions; results saved in `rag_evaluation_results.csv`.
 
-Filtered based on narratives and sub-product matches:
 
-- Credit card: 433,055
-- Savings account: 355,149
-- Money transfers: 150,212
-- Personal loan: 22,700
-- Buy Now, Pay Later (BNPL): 19,698
-
-### Cleaning & Processing
-
-- Removed entries with missing or short narratives (<10 words)
-- Standardized overlapping product names such as:
-  - `Credit card` + `Credit card or prepaid card`
-  - `Money transfers` + `Money transfer, virtual currency, or money service`
-- Saved cleaned output as:  
-  `data/processed/filtered_complaints.csv`
+### Task 4: Interactive Chat Interface
+- Built a user-friendly web interface using Gradio.
+- Features text input, submit button, generated answer display, and source text excerpts for transparency.
+- Supports easy question entry and response visualization.
 
 ---
 
-## Task 2: Chunking & Vector Store Creation
+## Setup & Usage
 
-### Chunking Strategy
+1. Clone the repository.
+2. Install dependencies:  
+   ```bash
+   pip install -r requirements.txt
+Build vector store (Task 2):
 
-- Split complaint narratives into **overlapping 300-word chunks**
-- Overlap: **50 words**
-- Each chunk retains metadata:
-  - `complaint_id`
-  - `product`
-  - `chunk_index`
+python src/build_vector_store.py
+Run RAG evaluation (Task 3):
+Execute notebooks/Task3/rag_evaluation.ipynb or use rag_pipeline.py directly.
 
-### Embedding Model
+Launch interactive app (Task 4):
 
-- **Model:** `sentence-transformers/all-MiniLM-L6-v2`
-- **Dimension:** 384
-- Chosen for:
-  - Balance of speed + accuracy
-  - Great for semantic search on short-to-medium texts
+python src/app.py
 
-### FAISS Vector Store
 
-- Used `IndexFlatIP` with **cosine similarity** (L2-normalized)
-- Artifacts saved:
-  - `faiss_index.index`
-  - `metadata.pkl`
-  - `config.pkl`
-- Stored in: `src/task2_vectorstore/faiss_index/`
 
----
-
-## How to Run
-
-```bash
-# Create virtual environment
-python -m venv .venv
-source .venv/bin/activate   # On Windows: .venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run preprocessing (Task 1)
-python src/task1_preprocessing/preprocess_data.py
-
-# Run vector store builder (Task 2)
-python src/task2_vectorstore/build_vector_store.py
